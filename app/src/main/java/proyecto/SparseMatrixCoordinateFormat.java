@@ -7,6 +7,7 @@ import lombok.Setter;
 import java.io.FileNotFoundException;
 import java.util.Arrays;
 import java.util.LinkedList;
+import java.util.Map;
 
 public class SparseMatrixCoordinateFormat {
 
@@ -172,8 +173,20 @@ public class SparseMatrixCoordinateFormat {
     public SparseMatrixCoordinateFormat getSquareMatrix() throws OperationNotSupportedException
     {
         SparseMatrixCoordinateFormat squaredMatrix = new SparseMatrixCoordinateFormat();
-        //Usar los metodos Set aqui de los atributos
-        throw new OperationNotSupportedException();
+        squaredMatrix.setColumns(this.columns);
+        squaredMatrix.setRows(this.rows);
+        int[] values= new int[this.values.length];
+        for (int i= 0; i<values.length; i++){
+            values[i]= (int) Math.pow(this.values[i], 2);
+        }
+        int[][] matrix= new int[this.rows.length][this.columns.length];
+        for (int i= 0; i< matrix.length; i++){
+            matrix[this.rows[i]][this.columns[i]]= values[i];
+        }
+        squaredMatrix.setMatrix(matrix);
+        squaredMatrix.setValues(values);
+        return squaredMatrix;
+
     }
 
     /*
@@ -182,9 +195,32 @@ public class SparseMatrixCoordinateFormat {
      */
     public SparseMatrixCoordinateFormat getTransposedMatrix() throws OperationNotSupportedException
     {
-        SparseMatrixCoordinateFormat squaredMatrix = new SparseMatrixCoordinateFormat();
+        SparseMatrixCoordinateFormat transposedMatrix = new SparseMatrixCoordinateFormat();
         //Usar los metodos Set aqui de los atributos
-        throw new OperationNotSupportedException();
+        int[] trans_row= new int[this.rows.length];
+        int[] trans_col= new  int[this.columns.length];
+        int[] values= new int[this.values.length];
+        int[][] matrix= new int[this.columns.length][this.rows.length];
+        for (int i= 0; i< matrix.length; i++){
+            matrix[this.columns[i]][this.rows[i]]= this.matrix[this.rows[i]][this.columns[i]];
+
+        }
+        transposedMatrix.setMatrix(matrix);
+        int z=0; //iterador para las listas de columnas y filas
+        for (int i= 0; i< matrix.length; i++){
+            for (int j= 0; j< matrix[0].length; j++){
+                if (matrix[i][j] !=0){
+                    trans_row[z]=i;
+                    trans_col[z]=j;
+                    values[z]= matrix[i][j];
+                    z++;
+                }
+            }
+        }
+        transposedMatrix.setRows(trans_row);
+        transposedMatrix.setColumns(trans_col);
+        transposedMatrix.setValues(values);
+        return  transposedMatrix;
     }
 
 
