@@ -184,6 +184,7 @@ class SparseMatrixCoordinateFormatTest {
                 new int[]{0, 0, 0, 0, 0}
         ));
 
+
         //Test 2
         instance.createRepresentation(file2);
         assertTrue(Arrays.equals(
