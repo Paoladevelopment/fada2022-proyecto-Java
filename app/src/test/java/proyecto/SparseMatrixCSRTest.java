@@ -243,6 +243,7 @@ class SparseMatrixCSRTest {
         assertTrue(Arrays.equals(cols, instance.getColumns()));
         assertTrue(Arrays.equals(values, instance.getValues()));
 
+
         //Test 1
         instance.createRepresentation(file1);
         instance.setValue(0, 4, 10);
@@ -293,6 +294,7 @@ class SparseMatrixCSRTest {
         assertTrue(Arrays.equals(rowsE, instance.getRows()));
         assertTrue(Arrays.equals(colsE, instance.getColumns()));
         assertTrue(Arrays.equals(valuesE, instance.getValues()));
+
     }
 
     @Test

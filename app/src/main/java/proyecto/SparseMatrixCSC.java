@@ -3,6 +3,7 @@ package proyecto;
 import javax.naming.OperationNotSupportedException;
 import lombok.Getter;
 import lombok.Setter;
+import java.util.ArrayList;
 
 import java.io.FileNotFoundException;
 import java.util.LinkedList;
@@ -102,19 +103,69 @@ public class SparseMatrixCSC {
 
     public void setValue(int i, int j, int value) throws OperationNotSupportedException
     {
-        for (int a= 0; a<this.columns.length; a++){
-            if(a==j){
-                //caso 1: la posicion i,j exista en la representación
-                for (int z= this.columns[a]; z < this.columns[a+1]; z++){
-                    if (this.rows[z]== a){
-                        this.values[z]= value;
+        ArrayList<Integer> Values = new ArrayList<Integer>();
+        ArrayList<Integer> Rows = new ArrayList<Integer>();
+
+        int a = 0;
+        for(int R : this.rows){
+            Rows.add(R);
+            a++;
+        }
+
+        a = 0;
+        for(int V : this.values){
+            Values.add(V);
+            a++;
+        }
+
+        a = 0;
+        while (a < this.columns.length){
+            if (a == j){
+                int lim1 = this.columns[a];
+                int lim2 = this.columns[a+1]-1;
+                while (lim1 <= lim2){
+                    if (Rows.get(lim1) == i){
+                        Values.add(lim1,value);
+                        break;
+                    }else{
+                        lim1++;
+                    }
+                }
+                while (a < this.columns.length-1){
+                    int valor = this.columns[a+1]+1;
+                    this.columns[a+1] = valor;
+                    a++;
+                }
+                lim1 = this.columns[j];
+                lim2 = this.columns[j+1]-1;
+                while (lim1 <= lim2){
+                    if (Rows.get(lim1) < i){
+                        lim1++;
+                    }else{
+                        Rows.add(lim1,i);
+                        Values.add(lim1, value);
                         break;
                     }
                 }
-
-                //caso 2: en la posición recibida hay un cero.
-
+                break;
+            }else{
+                a++;
             }
+        }
+
+        this.values = new int[Values.size()];
+        this.rows = new int[Rows.size()];
+
+        a = 0;
+        for(int V : Values){
+            this.values[a] = V;
+            a++;
+        }
+
+        a = 0;
+        for(int R : Rows){
+            this.rows[a] = R;
+            a++;
         }
     }
 

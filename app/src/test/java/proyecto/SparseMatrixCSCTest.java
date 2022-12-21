@@ -235,11 +235,12 @@ class SparseMatrixCSCTest {
     void setValue() throws OperationNotSupportedException, FileNotFoundException {
         SparseMatrixCSC instance = new SparseMatrixCSC();
         //Test 0
+
         instance.createRepresentation(file0);
         instance.setValue(0, 4, 10);
-        int rows[] = {4, 5, 6, 0, 1, 5, 1, 7, 2, 0, 1, 4, 7, 0};
+        int rows[] = {4, 5, 6, 0, 1, 5, 1, 7, 2,0, 1, 4, 7, 0};
         int cols[] = {0, 3, 6, 8, 9, 10, 13, 14};
-        int values[] = {25, 1, 16, 4, 16, 4, 81, 49, 9, 100, 1, 6, 11, 4};
+        int values[] = {5, 1, 4, 2, 8, 2, 9, 7, 3, 10, 1, 6, 11, 4};
         assertTrue(Arrays.equals(rows, instance.getRows()));
         assertTrue(Arrays.equals(cols, instance.getColumns()));
         assertTrue(Arrays.equals(values, instance.getValues()));

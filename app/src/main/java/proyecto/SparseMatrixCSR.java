@@ -111,7 +111,53 @@ public class SparseMatrixCSR {
 
     public void setValue(int i, int j, int value) throws OperationNotSupportedException
     {
-        throw new OperationNotSupportedException();
+        int[] new_values= new int[this.values.length+1];
+        int[] new_columns= new int[this.columns.length+1];
+        int cr=0; //iterador para la listas de columnas y rows
+        this.matrix[i][j]= value;
+        for (int y=0; y<this.rows.length-1;y++){
+            if (y == i){
+                for (int z= this.rows[y]; z<this.rows[y+1]; z++){
+                    if(j < this.columns[z]){
+                        new_values[cr]= value;
+                        new_columns[cr]= j;
+                        cr++;
+                        break;
+                    }else{
+                        new_columns[cr]=this.columns[z];
+                        new_values[cr]= this.values[z];
+                        cr++;
+                    }
+
+                }
+                if(j > this.columns[this.rows[y+1]-1]){
+                    new_values[cr]= value;
+                    new_columns[cr]= j;
+                    cr++;
+                    break;
+                }
+            }else if(y < i){
+                for (int z= this.rows[y]; z<this.rows[y+1]; z++){
+                    new_columns[cr]=this.columns[z];
+                    new_values[cr]= this.values[z];
+                    cr++;
+                }
+            }else {
+                break;
+            }
+        }
+
+        for (int y= cr; y< new_columns.length; y++){
+            new_columns[y]= this.columns[y-1];
+            new_values[y]= this.values[y-1];
+        }
+
+        for (int y= i+1; y<this.rows.length;y++){
+            this.rows[y]= this.rows[y]+1;
+        }
+        this.columns= new_columns;
+        this.values=new_values;
+
     }
 
     /*
