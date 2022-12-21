@@ -179,11 +179,6 @@ public class SparseMatrixCoordinateFormat {
         for (int i= 0; i<values.length; i++){
             values[i]= (int) Math.pow(this.values[i], 2);
         }
-        int[][] matrix= new int[this.rows.length][this.columns.length];
-        for (int i= 0; i< matrix.length; i++){
-            matrix[this.rows[i]][this.columns[i]]= values[i];
-        }
-        squaredMatrix.setMatrix(matrix);
         squaredMatrix.setValues(values);
         return squaredMatrix;
 
