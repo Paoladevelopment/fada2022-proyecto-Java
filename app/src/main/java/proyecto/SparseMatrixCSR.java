@@ -49,7 +49,7 @@ public class SparseMatrixCSR {
         }
         rows[r]= values.size();
 
-        //Elementos de values en el atributo value de la clase del formato coordenado
+
         //Valores
         this.values= new int[values.size()];
         int i=0;
@@ -98,7 +98,6 @@ public class SparseMatrixCSR {
     public int[] getColumn(int j) throws OperationNotSupportedException
     {
         int[] col_value= new int[this.rows.length-1];
-        int c=0;
         for(int i= 0; i<col_value.length; i++){
             for (int z= this.rows[i]; z <this.rows[i+1]; z++){
                 if (this.columns[z] == j){
@@ -138,8 +137,15 @@ public class SparseMatrixCSR {
      */
     public SparseMatrixCSR getTransposedMatrix() throws OperationNotSupportedException
     {
-        SparseMatrixCSR transposedMatrix = new SparseMatrixCSR();
-        return  transposedMatrix;
+        SparseMatrixCSR transposedMatrix;
+        int[][] matrix= new int[mayor(this.columns)+1][this.rows.length-1];
+        for(int i= 0; i<this.rows.length-1; i++){
+            for (int z= this.rows[i]; z <this.rows[i+1]; z++){
+                matrix[this.columns[z]][i]= this.matrix[i][this.columns[z]];
+            }
+        }
+        transposedMatrix= createRepresentationTrans(matrix);
+        return transposedMatrix;
     }
 
     //métodos útiles
@@ -152,4 +158,58 @@ public class SparseMatrixCSR {
         }
         return mayor;
     }
+
+    public SparseMatrixCSR createRepresentationTrans(int[][] matrix){
+        SparseMatrixCSR matCSR= new SparseMatrixCSR();
+        int[] trans_col;
+        int[] trans_row= new int[matrix.length+1];
+        int[] trans_values;
+        LinkedList<Integer> values= new LinkedList<Integer>();
+        LinkedList<Integer> columns= new LinkedList<Integer>();
+        boolean start_row= false; //indica cuando empieza una nueva fila.
+        int r= 0; //iterador para la lista fila
+        for (int i= 0; i<matrix.length;i++){
+            for (int j=0; j<matrix[0].length;j++){
+                if(j==0){
+                    start_row= true;
+                }
+                if(matrix[i][j]!=0){
+                    values.add(matrix[i][j]);
+                    columns.add(j);
+                    if (start_row){
+                        trans_row[r]= values.size()-1;
+                        r++;
+                        start_row=false;
+                    }
+                } else if (j== matrix[0].length-1 && start_row) {
+                    trans_row[r]= values.size();
+                    r++;
+                }
+            }
+        }
+        trans_row[r]= values.size();
+
+
+        //Valores
+        trans_values= new int[values.size()];
+        int i=0;
+        for (int val: values){
+            trans_values[i]= val;
+            i++;
+        }
+
+        //Columnas
+        trans_col= new int[columns.size()];
+        i=0;
+        for (int col: columns){
+            trans_col[i]= col;
+            i++;
+        }
+        matCSR.setColumns(trans_col);
+        matCSR.setRows(trans_row);
+        matCSR.setValues(trans_values);
+        matCSR.setMatrix(matrix);
+        return matCSR;
+    }
+
 }

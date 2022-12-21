@@ -378,6 +378,7 @@ class SparseMatrixCSRTest {
         assertTrue(Arrays.equals(colsA, inst.getColumns()));
         assertTrue(Arrays.equals(valuesA, inst.getValues()));
 
+
         //Test 2
         instance.createRepresentation(file2);
         inst = instance.getTransposedMatrix();

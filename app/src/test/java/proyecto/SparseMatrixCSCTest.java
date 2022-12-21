@@ -176,6 +176,7 @@ class SparseMatrixCSCTest {
     void getColumn() throws OperationNotSupportedException, FileNotFoundException {
         SparseMatrixCSC instance = new SparseMatrixCSC();
         //Test 1
+
         instance.createRepresentation(file1);
         assertTrue(Arrays.equals(
                 instance.getColumn(1),
@@ -185,6 +186,7 @@ class SparseMatrixCSCTest {
                 instance.getColumn(4),
                 new int[]{0, 0, 0, 0, 0}
         ));
+
 
         //Test 2
         instance.createRepresentation(file2);
@@ -373,15 +375,15 @@ class SparseMatrixCSCTest {
 
     @Test
     void getTransposedMatrix() throws OperationNotSupportedException, FileNotFoundException {
-        SparseMatrixCoordinateFormat instance = new SparseMatrixCoordinateFormat();
-        SparseMatrixCoordinateFormat inst;
+        SparseMatrixCSC instance = new SparseMatrixCSC();
+        SparseMatrixCSC inst;
 
         //Test 0
         instance.createRepresentation(file0);
-        inst = instance.getTransposedMatrix();
-        int rows[] = {0, 3, 6, 8, 9, 9, 12, 13};
-        int cols[] = {4, 5, 6, 0, 1, 5, 1, 7, 2, 1, 4, 7, 0};
-        int values[] = {5, 1, 4, 2, 8, 2, 9, 7, 3, 1, 6, 11, 4};
+        inst= instance.getTransposedMatrix();
+        int rows[] = {1, 6, 1, 2, 5, 0, 1, 0, 2, 5};
+        int cols[] = {0, 2, 5, 6, 6, 8, 10, 11, 13};
+        int values[] = {2, 4, 8, 9, 1, 3, 5, 6, 1, 2, 4, 7, 11};
         assertTrue(Arrays.equals(rows, inst.getRows()));
         assertTrue(Arrays.equals(cols, inst.getColumns()));
         assertTrue(Arrays.equals(values, inst.getValues()));
@@ -389,9 +391,9 @@ class SparseMatrixCSCTest {
         //Test 1
         instance.createRepresentation(file1);
         inst = instance.getTransposedMatrix();
-        int rowsA[] = {0, 0, 4, 8, 8, 8, 9, 9, 10};
-        int colsA[] = {0, 1, 2, 4, 0, 2, 3, 4, 2, 4};
-        int valuesA[] = {1, 1, 1, 1, 4, 2, 3, 4, 8, 9};
+        int rowsA[] = {1, 2, 1, 1, 2, 5, 2, 1, 2, 7};
+        int colsA[] = {0, 2, 3, 6, 7, 10};
+        int valuesA[] = {1, 4, 1, 1, 2, 8, 3, 1, 4, 9};
         assertTrue(Arrays.equals(rowsA, inst.getRows()));
         assertTrue(Arrays.equals(colsA, inst.getColumns()));
         assertTrue(Arrays.equals(valuesA, inst.getValues()));
@@ -435,5 +437,7 @@ class SparseMatrixCSCTest {
         assertTrue(Arrays.equals(rowsE, inst.getRows()));
         assertTrue(Arrays.equals(colsE, inst.getColumns()));
         assertTrue(Arrays.equals(valuesE, inst.getValues()));
+
+
     }
 }

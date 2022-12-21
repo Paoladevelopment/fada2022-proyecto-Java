@@ -2,44 +2,120 @@ package proyecto;
 
 import javax.naming.OperationNotSupportedException;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.io.FileNotFoundException;
+import java.util.LinkedList;
 
 public class SparseMatrixCSC {
     private LoadFile loader = LoadFile.getInstance();
+    @Setter
     private int[][] matrix;
-    @Getter
+    @Getter @Setter
     private int[] rows;
-    @Getter
+    @Getter @Setter
     private int[] columns;
-    @Getter
+    @Getter @Setter
     private int[] values;
 
     public void createRepresentation(String inputFile) throws OperationNotSupportedException, FileNotFoundException {
         //Load data
         loader.loadFile(inputFile);
         matrix = loader.getMatrix();
-        throw new OperationNotSupportedException();
+        LinkedList<Integer> values= new LinkedList<Integer>();
+        LinkedList<Integer> rows= new LinkedList<Integer>();
+        this.columns= new int[this.matrix[0].length+1];
+        int cnt=0;
+        for (int i=0; i<matrix[0].length; i++){
+            for (int j=0; j<matrix.length; j++){
+                if (matrix[j][i]!=0){
+                    values.add(matrix[j][i]);
+                    rows.add(j);
+                    cnt++;
+                }
+            }
+            if(i==0){
+                this.columns[1]= cnt;
+                cnt=0;
+            }else {
+                this.columns[i+1]= this.columns[i]+cnt;
+                cnt=0;
+            }
+        }
+
+        //Valores
+        this.values= new int[values.size()];
+        int i=0;
+        for (int val: values){
+            this.values[i]= val;
+            i++;
+        }
+
+        //Filas
+        this.rows= new int[rows.size()];
+        i=0;
+        for (int row: rows){
+            this.rows[i]= row;
+            i++;
+        }
     }
 
     public int getElement(int i, int j) throws OperationNotSupportedException
     {
-        throw new OperationNotSupportedException();
+
+        for(int z= this.columns[j]; z < this.columns[j+1]; z++){
+            if(this.rows[z] == i){
+                return this.values[z];
+            }
+        }
+        return 0;
     }
 
     public int[] getRow(int i) throws OperationNotSupportedException
     {
-        throw new OperationNotSupportedException();
+        int[] row_value= new int[this.columns.length-1];
+        for(int j= 0; j<row_value.length; j++){
+            for (int z= this.columns[j]; z <this.columns[j+1]; z++){
+                if (this.rows[z] == i){
+                    row_value[j]= this.values[z];
+                    continue;
+                }
+            }
+        }
+        return row_value;
     }
 
     public int[] getColumn(int j) throws OperationNotSupportedException
     {
-        throw new OperationNotSupportedException();
+        int[] col_value= new int[mayor(this.rows)+1];
+
+        for(int i=0; i<this.columns.length;i++){
+            if(i == j){
+                for (int z= this.columns[i]; z < this.columns[i+1];z++){
+                    col_value[this.rows[z]]= this.values[z];
+
+                }
+            }
+        }
+        return col_value;
     }
 
     public void setValue(int i, int j, int value) throws OperationNotSupportedException
     {
-        throw new OperationNotSupportedException();
+        for (int a= 0; a<this.columns.length; a++){
+            if(a==j){
+                //caso 1: la posicion i,j exista en la representación
+                for (int z= this.columns[a]; z < this.columns[a+1]; z++){
+                    if (this.rows[z]== a){
+                        this.values[z]= value;
+                        break;
+                    }
+                }
+
+                //caso 2: en la posición recibida hay un cero.
+
+            }
+        }
     }
 
     /*
@@ -49,7 +125,14 @@ public class SparseMatrixCSC {
     public SparseMatrixCSC getSquareMatrix() throws OperationNotSupportedException
     {
         SparseMatrixCSC squaredMatrix = new SparseMatrixCSC();
-        throw new OperationNotSupportedException();
+        squaredMatrix.setColumns(this.columns);
+        squaredMatrix.setRows(this.rows);
+        int[] values= new int[this.values.length];
+        for (int i= 0; i<values.length; i++){
+            values[i]= (int) Math.pow(this.values[i], 2);
+        }
+        squaredMatrix.setValues(values);
+        return squaredMatrix;
     }
 
     /*
@@ -58,7 +141,74 @@ public class SparseMatrixCSC {
      */
     public SparseMatrixCSC getTransposedMatrix() throws OperationNotSupportedException
     {
-        SparseMatrixCSC squaredMatrix = new SparseMatrixCSC();
-        throw new OperationNotSupportedException();
+        SparseMatrixCSC transposedMat;
+        int[][] matrix= new int[this.columns.length-1][mayor(this.rows)+1];
+        for(int i= 0; i<this.columns.length-1; i++){
+            for (int z= this.columns[i]; z <this.columns[i+1]; z++){
+                matrix[i][this.rows[z]]= this.matrix[this.rows[z]][i];
+            }
+        }
+
+        transposedMat= createRepresentationTrans(matrix);
+        return transposedMat;
+    }
+
+    //Métodos útiles
+    private int mayor(int[] a){
+        int mayor= 0;
+        for (int i= 0; i<a.length;i++){
+            if(a[i]>mayor){
+                mayor= a[i];
+            }
+        }
+        return mayor;
+    }
+
+    public SparseMatrixCSC createRepresentationTrans(int[][] matrix){
+        SparseMatrixCSC matCSC= new SparseMatrixCSC();
+        int[] trans_values;
+        int[] trans_row;
+        LinkedList<Integer> values= new LinkedList<Integer>();
+        LinkedList<Integer> rows= new LinkedList<Integer>();
+        int[] trans_columns= new int[matrix[0].length+1];
+        int cnt=0;
+        for (int i=0; i<matrix[0].length; i++){
+            for (int j=0; j<matrix.length; j++){
+                if (matrix[j][i]!=0){
+                    values.add(matrix[j][i]);
+                    rows.add(j);
+                    cnt++;
+                }
+            }
+            if(i==0){
+                trans_columns[1]= cnt;
+                cnt=0;
+            }else {
+                trans_columns[i+1]= trans_columns[i]+cnt;
+                cnt=0;
+            }
+        }
+
+        //Valores
+        trans_values= new int[values.size()];
+        int i=0;
+        for (int val: values){
+            trans_values[i]= val;
+            i++;
+        }
+
+        //Filas
+        trans_row= new int[rows.size()];
+        i=0;
+        for (int row: rows){
+            trans_row[i]= row;
+            i++;
+        }
+        matCSC.setColumns(trans_columns);
+        matCSC.setRows(trans_row);
+        matCSC.setValues(trans_values);
+        matCSC.setMatrix(matrix);
+
+        return  matCSC;
     }
 }

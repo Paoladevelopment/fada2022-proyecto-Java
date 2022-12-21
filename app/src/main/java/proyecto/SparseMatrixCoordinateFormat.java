@@ -195,7 +195,7 @@ public class SparseMatrixCoordinateFormat {
         int[] trans_row= new int[this.rows.length];
         int[] trans_col= new  int[this.columns.length];
         int[] values= new int[this.values.length];
-        int[][] matrix= new int[this.columns.length][this.rows.length];
+        int[][] matrix= new int[mayor(this.columns)+1][mayor(this.rows)+1];
         for (int i= 0; i< matrix.length; i++){
             matrix[this.columns[i]][this.rows[i]]= this.matrix[this.rows[i]][this.columns[i]];
 
